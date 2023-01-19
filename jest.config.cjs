@@ -19,5 +19,8 @@ module.exports = {
   },
   testMatch: [
     "<rootDir>/tests/*.test.tsx"
+  ],
+  setupFilesAfterEnv: [
+    "<rootDir>/tests/setup-jest.ts"
   ]
 }
