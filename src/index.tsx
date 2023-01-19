@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Pressable, KeyboardAvoidingView, View, Text, TextInput, GestureResponderEvent } from 'react-native'
 
-export const VerificationCodeFieldGroup = () => {
+type OTPInputProps = {
+  inputQuantity: number,
+  autoSubmit: boolean,
+  onSubmit: (code: string) => void,
+}
+
+export const OTPInput = ({ inputQuantity, autoSubmit, onSubmit }: OTPInputProps) => {
   /* 
   This field group should pass a few tests
   1. Autocomplete on iOS (and hopefully android), if clicked, should fill out all of the cells.
@@ -9,13 +15,18 @@ export const VerificationCodeFieldGroup = () => {
   3. If backspace is pressed and something is in the cell, delete that number.
   4. If backspace is pressed and nothing is in the cell, delete the number of the previous cell.
   */
-  const quantity = 4
   const [ text, setText ] = useState('')
   const inputRef = useRef<TextInput | null>(null)
 
   useEffect(() => {
     focusHiddenInput()
   }, [])
+
+  useEffect(() => {
+    if (text.length === inputQuantity && autoSubmit) {
+      onSubmit(text)
+    }
+  }, [ text ])
 
   const focusHiddenInput = () => {
     inputRef.current?.focus()
@@ -43,8 +54,9 @@ export const VerificationCodeFieldGroup = () => {
       }}
     >
       <TextInput
+        testID='hidden-input'
         ref={inputRef}
-        maxLength={quantity}
+        maxLength={inputQuantity}
         value={text}
         onChangeText={onChangeText}
         keyboardType='number-pad'
@@ -64,13 +76,13 @@ export const VerificationCodeFieldGroup = () => {
         }}
       >
         {
-          Array.from(Array(4).keys()).map(index => {
+          Array.from(Array(inputQuantity).keys()).map(index => {
             return (
-              <VerificationCodeField
+              <CodeField
                 key={index}
                 index={index}
                 value={getValueCharacter(index)}
-                focused={Math.min(text.length, quantity - 1) == index}
+                focused={Math.min(text.length, inputQuantity - 1) == index}
                 onPress={focusHiddenInput}
               />
             )
@@ -80,30 +92,34 @@ export const VerificationCodeFieldGroup = () => {
   )
 }
 
-
-
-type VerificationCodeFieldProps = {
+type CodeFieldProps = {
   index: number,
   value: string,
   focused: boolean,
   onPress: (e: GestureResponderEvent, index: number) => void,
 }
 
-const VerificationCodeField = (
+const CodeField = (
   {
     index,
     value,
     focused,
     onPress,
-  }: VerificationCodeFieldProps,
+  }: CodeFieldProps,
 ) => {
   const [ cursorBlinkOn, setCursorBlinkOn ] = useState(true)
 
   useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>
     if (focused) {
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         setCursorBlinkOn(!cursorBlinkOn)
       }, 600)
+    }
+    () => {
+      if (timeout) {
+        clearTimeout(timeout)
+      }
     }
   }, [ focused, cursorBlinkOn ])
 
@@ -160,7 +176,5 @@ const VerificationCodeField = (
 }
 
 export default {
-  VerificationCodeFieldGroup,
+  OTPInput,
 }
-
-
