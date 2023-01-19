@@ -1,0 +1,12 @@
+name: Test OTP Component
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.17
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: yarn
+      - run: yarn test
