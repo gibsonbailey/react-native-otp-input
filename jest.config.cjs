@@ -10,10 +10,14 @@ module.exports = {
   ],
   preset: 'react-native',
   transform: {
-    "^.+\\.(ts|tsx)?$": "ts-jest",
+    "^.+\\.(ts|tsx)?$": [
+      'ts-jest', {
+        tsconfig: './configs/tsconfig.base.json',
+      }
+    ],
     "^.+\\.(js|jsx)$": "babel-jest"
   },
   testMatch: [
-    "<rootDir>/tests/*.test.js"
+    "<rootDir>/tests/*.test.tsx"
   ]
 }
