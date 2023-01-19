@@ -151,6 +151,7 @@ const CodeField = (
           }
         >
           <Text
+            testID={`visible-input-text-${index}`}
             style={
               {
                 color: 'white',
