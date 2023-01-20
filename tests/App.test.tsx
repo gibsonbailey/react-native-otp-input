@@ -37,3 +37,15 @@ test('typing in hidden input renders digits on visible inputs', async () => {
         expect(visibleInput).toHaveTextContent('432'[i])
     }
 })
+
+test('inputQuantity renders correct number of inputs', async () => {
+    const onSubmit = jest.fn()
+
+    render(<OTPInput inputQuantity={4} autoSubmit={true} onSubmit={onSubmit} />)
+    let visibleInputs = await screen.findAllByTestId(/^visible-input-text-\d+$/)
+    expect(visibleInputs.length).toBe(4)
+
+    render(<OTPInput inputQuantity={7} autoSubmit={true} onSubmit={onSubmit} />)
+    visibleInputs = await screen.findAllByTestId(/^visible-input-text-\d+$/)
+    expect(visibleInputs.length).toBe(7)
+})
