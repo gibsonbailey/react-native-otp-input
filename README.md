@@ -3,7 +3,7 @@
 This is a lag-free One Time Password component for react-native.
 
 
-# Usage
+## Usage
 ```ts
 export const MyComponent = () => {
     const onSubmit = (code: string) => {
